@@ -116,6 +116,19 @@ def call_ai(ai_provider, api_key, model_name, prompt) -> str:
         except Exception as e:
             return f"[Ollama error] {e}\n\nMake sure Ollama is running locally with the model '{model_name}'."
 
+    elif ai_provider == "Groq (free)":
+        try:
+            from openai import OpenAI
+            client = OpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1")
+            response = client.chat.completions.create(
+                model=model_name or "llama-3.1-8b-instant",
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=1500,
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            return f"[Groq error] {e}"
+
     elif ai_provider == "OpenAI":
         try:
             from openai import OpenAI
@@ -275,14 +288,24 @@ with st.sidebar:
     st.subheader("🤖 AI Provider")
     ai_provider = st.selectbox(
         "Select AI",
-        ["Ollama (local)", "OpenAI", "Claude (Anthropic)"],
-        help="Ollama runs locally for free. OpenAI and Claude require an API key."
+        ["Groq (free)", "Ollama (local)", "OpenAI", "Claude (Anthropic)"],
+        help="Groq is free and works in the cloud. Ollama runs locally."
     )
 
     api_key = ""
     model_name = ""
 
-    if ai_provider == "Ollama (local)":
+    if ai_provider == "Groq (free)":
+        api_key = st.text_input("Groq API Key", type="password",
+                                help="Free at console.groq.com → API Keys")
+        model_name = st.selectbox("Model", [
+            "llama-3.1-8b-instant",
+            "llama-3.3-70b-versatile",
+            "mixtral-8x7b-32768",
+        ])
+        st.success("✅ Groq is free — no credit card needed!")
+
+    elif ai_provider == "Ollama (local)":
         model_name = st.text_input("Ollama model", value="llama3",
                                    help="Model must be pulled locally (ollama pull llama3)")
 
