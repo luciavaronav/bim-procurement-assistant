@@ -173,7 +173,7 @@ Equipment inventory (exact quantities - do not modify):
 
 TASKS:
 
-1. RFQ LOTS - Group equipment into logical procurement batches based on supplier specialisation. For each lot, list the individual equipment items with their exact quantities. DO NOT calculate or write any total or subtotal for the lot - just list the items.
+1. RFQ LOTS - Group equipment into logical procurement batches based on supplier specialisation. CRITICAL RULES: (a) MUTUALLY EXCLUSIVE: assign each equipment family to ONE AND ONLY ONE lot - never duplicate an item across different lots. (b) EXACT QUANTITIES: list the exact quantity for each item as provided in the inventory above. Do not calculate totals, subtotals, or write additions like 30+7.
 
 2. 4-WEEK ACTION PLAN - Office-based procurement milestones only:
    - Week 1: RFQ preparation and supplier shortlisting
