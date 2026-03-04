@@ -159,17 +159,32 @@ def call_ai(ai_provider, api_key, model_name, prompt) -> str:
 
 
 def build_prompt(total_units, n_rows, n_issues, df_family) -> str:
-    return f"""Act as a Senior Procurement Engineer.
-Summary: {total_units} total units, {n_rows} line items, {n_issues} data quality issues.
-Inventory by family:
-{df_family.to_string(index=False)}
+    family_data = df_family.to_string(index=False)
+    return f"""You are an office-based Senior Procurement Engineer on an MEP/Electrical project.
+You have received a validated BOM exported from Autodesk Revit via a Python pipeline.
+
+VALIDATED DATA - do not recalculate, use exactly as provided:
+- Total units: {total_units}
+- BOM line items: {n_rows}
+- Data quality issues: {n_issues}
+
+Equipment inventory (exact quantities - do not modify):
+{family_data}
 
 TASKS:
-1. RFQ purchase lots — group equipment into logical procurement batches.
-2. 4-week action plan — concrete weekly milestones.
-3. Critical risks — top 3 risks with mitigation actions.
 
-RULE: DO NOT USE TABLES. Use bullet points or dashes only.
+1. RFQ LOTS - Group equipment into logical procurement batches based on supplier specialisation. Use the exact quantities above, do not recalculate.
+
+2. 4-WEEK ACTION PLAN - Office-based procurement milestones only:
+   - Week 1: RFQ preparation and supplier shortlisting
+   - Week 2: RFQ issue and supplier follow-up
+   - Week 3: Quotation analysis and negotiation
+   - Week 4: Purchase order placement and delivery scheduling
+   Note: if data quality issues exist, escalate the Data Quality Log to the BIM Manager for correction in Revit. Do NOT suggest physical site visits.
+
+3. TOP 3 RISKS - Focus on lead times, supplier availability, incomplete BIM data blocking orders, and floor-level delivery sequencing. Include mitigation for each.
+
+RULES: Do not recalculate quantities. Do not suggest site visits. No tables. Bullet points only. Professional tone.
 """
 
 
